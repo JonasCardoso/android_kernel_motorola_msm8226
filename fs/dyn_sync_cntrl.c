@@ -18,7 +18,7 @@
 #include <linux/module.h>
 #include <linux/kobject.h>
 #include <linux/sysfs.h>
-#include <linux/powersuspend.h>
+#include <linux/lcd_notify.h>
 #include <linux/mutex.h>
 #include <linux/notifier.h>
 #include <linux/reboot.h>
@@ -32,6 +32,8 @@
  * transitions
  */
 static DEFINE_MUTEX(fsync_mutex);
+
+static struct notifier_block dfnotif;
 
 bool power_suspend_active __read_mostly = false;
 bool dyn_fsync_active __read_mostly = true;
@@ -111,28 +113,39 @@ static void dyn_fsync_force_flush(void)
 	sync_filesystems(1);
 }
 
-static void dyn_fsync_suspend(struct power_suspend *p)
+static void dyn_fsync_suspend(void)
 {
-	mutex_lock(&fsync_mutex);
 	if (dyn_fsync_active) {
 		power_suspend_active = true;
 		dyn_fsync_force_flush();
 	}
-	mutex_unlock(&fsync_mutex);
 }
 
-static void dyn_fsync_resume(struct power_suspend *p)
+static void dyn_fsync_resume(void)
+{
+	power_suspend_active = false;
+}
+
+static int lcd_notifier_callback(struct notifier_block *this,
+				unsigned long event, void *data)
 {
 	mutex_lock(&fsync_mutex);
-	power_suspend_active = false;
-	mutex_unlock(&fsync_mutex);
-}
 
-static struct power_suspend dyn_fsync_power_suspend_handler = 
-	{
-		.suspend = dyn_fsync_suspend,
-		.resume = dyn_fsync_resume,
-	};
+	switch (event) {
+	case LCD_EVENT_ON_START:
+			dyn_fsync_resume();
+			break;
+	case LCD_EVENT_OFF_END:
+			dyn_fsync_suspend();
+			break;
+	default:
+			break;
+	}
+
+	mutex_unlock(&fsync_mutex);
+
+	return NOTIFY_OK;
+}
 
 static int dyn_fsync_panic_event(struct notifier_block *this,
 		unsigned long event, void *ptr)
@@ -168,7 +181,10 @@ static int dyn_fsync_init(void)
 {
 	int sysfs_result;
 
-	register_power_suspend(&dyn_fsync_power_suspend_handler);
+	dfnotif.notifier_call = lcd_notifier_callback;
+	if (lcd_register_client(&dfnotif))
+		return -EINVAL;
+
 	register_reboot_notifier(&dyn_fsync_notifier);
 	atomic_notifier_chain_register(&panic_notifier_list,
 		&dyn_fsync_panic_block);
@@ -191,7 +207,7 @@ static int dyn_fsync_init(void)
 
 static void dyn_fsync_exit(void)
 {
-	unregister_power_suspend(&dyn_fsync_power_suspend_handler);
+	lcd_unregister_client(&dfnotif);
 	unregister_reboot_notifier(&dyn_fsync_notifier);
 	atomic_notifier_chain_unregister(&panic_notifier_list,
 		&dyn_fsync_panic_block);
