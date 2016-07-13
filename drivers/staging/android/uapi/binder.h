@@ -48,6 +48,14 @@ typedef __u64 binder_size_t;
 typedef __u64 binder_uintptr_t;
 #endif
 
+/**
+ * struct binder_object_header - header shared by all binder metadata objects.
+ * @type:	type of the object
+ */
+struct binder_object_header {
+	__u32        type;
+};
+
 /*
  * This is the flattened representation of a Binder object for transfer
  * between processes.  The 'offsets' supplied as part of a binder transaction
@@ -56,9 +64,8 @@ typedef __u64 binder_uintptr_t;
  * between processes.
  */
 struct flat_binder_object {
-	/* 8 bytes for large_flat_header. */
-	__u32		type;
-	__u32		flags;
+	struct binder_object_header	hdr;
+	__u32				flags;
 
 	/* 8 bytes of data. */
 	union {
@@ -87,38 +94,6 @@ struct binder_fd_object {
 	};
 
 	binder_uintptr_t		cookie;
-};
-
-/* struct binder_buffer_object - object describing a userspace buffer
- * @hdr:		common header structure
- * @flags:		one or more BINDER_BUFFER_* flags
- * @buffer:		address of the buffer
- * @length:		length of the buffer
- * @parent:		index in offset array pointing to parent buffer
- * @parent_offset:	offset in @parent pointing to this buffer
- *
- * A binder_buffer object represents an object that the
- * binder kernel driver can copy verbatim to the target
- * address space. A buffer itself may be pointed to from
- * within another buffer, meaning that the pointer inside
- * that other buffer needs to be fixed up as well. This
- * can be done by setting the BINDER_BUFFER_FLAG_HAS_PARENT
- * flag in @flags, by setting @parent buffer to the index
- * in the offset array pointing to the parent binder_buffer_object,
- * and by setting @parent_offset to the offset in the parent buffer
- * at which the pointer to this buffer is located.
- */
-struct binder_buffer_object {
-	struct binder_object_header	hdr;
-	__u32				flags;
-	binder_uintptr_t		buffer;
-	binder_size_t			length;
-	binder_size_t			parent;
-	binder_size_t			parent_offset;
-};
-
-enum {
-	BINDER_BUFFER_FLAG_HAS_PARENT = 0x01,
 };
 
 /*
