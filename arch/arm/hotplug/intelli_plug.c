@@ -53,11 +53,11 @@ static struct workqueue_struct *intelliplug_wq;
 static struct workqueue_struct *intelliplug_boost_wq;
 
 static unsigned int intelli_plug_active = 0;
-<<<<<<< HEAD
+
 module_param(intelli_plug_active, uint, 0644);
-=======
+
 module_param(intelli_plug_active, uint, 0664);
->>>>>>> 0d07a17... intelli_plug: add perf_boost sysfs entry and clean up permissions (thanks to @faux123) Also bump version to 4.0
+
 
 static unsigned int touch_boost_active = 1;
 module_param(touch_boost_active, uint, 0664);
