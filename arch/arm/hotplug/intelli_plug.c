@@ -635,16 +635,13 @@ int __init intelli_plug_init(void)
 		msecs_to_jiffies(10));
 	intelli_plug_perf_boost_kobj
 		= kobject_create_and_add("intelli_plug", kernel_kobj);
-
 	if (!intelli_plug_perf_boost_kobj) {
 		return -ENOMEM;
 	}
-
 	rc = sysfs_create_group(intelli_plug_perf_boost_kobj,
 				&intelli_plug_perf_boost_attr_group);
 	if (rc)
 		kobject_put(intelli_plug_perf_boost_kobj);
-
 	return 0;
 }
 
