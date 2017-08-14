@@ -126,7 +126,7 @@ then
 		make -j${NR_CPUS} CONFIG_NO_ERROR_ON_MISMATCH=y CONFIG_DEBUG_SECTION_MISMATCH=y
 	fi
 
-	./dtbTool -s 2048 -o arch/arm/boot/dt.img -p scripts/dtc/ arch/arm/boot/
+	 ./dtbTool -o arch/arm/boot/dt.img -s 2048 -p scripts/dtc/ arch/arm/boot/
 
 	END=$(date +"%s")
 	BUILDTIME=$((${END} - ${START}))

@@ -62,6 +62,9 @@ insert_line init.qcom.rc "init.floppy.rc" after "import init.target.rc" "import 
 # add support for spectrum
 insert_line init.rc "import /init.spectrum.rc" after "import /init.floppy.rc" "import /init.spectrum.rc";
 
+# ramdisk patch
+ramdisk_patch;
+
 # end ramdisk changes
 
 write_boot;
