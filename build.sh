@@ -116,9 +116,9 @@ then
 	START=$(date +"%s")
 	if [ "${buildoutput}" == "OFF" ]
 	then
-		make -j${NR_CPUS}  &>/dev/null CONFIG_NO_ERROR_ON_MISMATCH=y | loop
+		make -j${NR_CPUS}  &>/dev/null CONFIG_NO_ERROR_ON_MISMATCH=y CONFIG_DEBUG_SECTION_MISMATCH=y | loop
 	else
-		make -j${NR_CPUS} CONFIG_NO_ERROR_ON_MISMATCH=y
+		make -j${NR_CPUS} CONFIG_NO_ERROR_ON_MISMATCH=y CONFIG_DEBUG_SECTION_MISMATCH=y
 	fi
 
 	#./dtbTool -s 2048 -o arch/arm64/boot/dt.img -p scripts/dtc/ arch/arm/boot/dts/qcom/
