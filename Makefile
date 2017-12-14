@@ -573,7 +573,7 @@ endif # $(dot-config)
 all: vmlinux
 
 ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
-KBUILD_CFLAGS	+= -Os
+KBUILD_CFLAGS	+= -Os 
 endif
 ifdef CONFIG_CC_OPTIMIZE_DEFAULT
 KBUILD_CFLAGS  += -O2
@@ -584,6 +584,8 @@ endif
 ifdef CONFIG_CC_OPTIMIZE_FAST
 KBUILD_CFLAGS  += -Ofast
 endif
+
+include $(srctree)/arch/$(SRCARCH)/Makefile
 
 # Disable all maybe-uninitialized warnings
 KBUILD_CFLAGS	+= $(call cc-disable-warning,maybe-uninitialized,)
@@ -600,9 +602,6 @@ KBUILD_CFLAGS   += $(call cc-option,-fno-store-merging,)
 KBUILD_CFLAGS += $(call cc-disable-warning,array-bounds)
 KBUILD_CFLAGS += $(call cc-disable-warning,unused-function)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-variable)
-
-# Tell gcc to never replace conditional load with a non-conditional one
-KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
 
 ifneq ($(CONFIG_FRAME_WARN),0)
 KBUILD_CFLAGS += $(call cc-option,-Wframe-larger-than=${CONFIG_FRAME_WARN})
