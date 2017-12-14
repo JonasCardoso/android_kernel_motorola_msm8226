@@ -97,4 +97,6 @@ fi;
 umount /system;
 umount /data;
 ui_print " ";
-ui_print "Done!";
+ui_print "Kernel has been successfully loaded on your device!";
+ui_print "FEEL THE POWER AND ENJOY!";
+ui_print " ";
