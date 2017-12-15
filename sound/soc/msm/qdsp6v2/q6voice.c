@@ -28,16 +28,12 @@
 #include "audio_acdb.h"
 #include "q6voice.h"
 
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE
 #include <linux/input/sweep2wake.h>
 #endif
 #ifdef CONFIG_TOUCHSCREEN_DOUBLETAP2WAKE
 #include <linux/input/doubletap2wake.h>
 #endif
-
->>>>>>> 02e048e... dt2w/s2w: implement call_activity
 
 #define TIMEOUT_MS 300
 
@@ -105,8 +101,6 @@ static int voice_alloc_oob_mem_table(void);
 static int voice_alloc_and_map_cal_mem(struct voice_data *v);
 static int voice_alloc_and_map_oob_mem(struct voice_data *v);
 
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE
 extern bool s2w_call_activity;
 #endif
@@ -114,7 +108,6 @@ extern bool s2w_call_activity;
 extern bool dt2w_call_activity;
 #endif
 
->>>>>>> 02e048e... dt2w/s2w: implement call_activity
 static struct voice_data *voice_get_session_by_idx(int idx);
 
 static void voice_itr_init(struct voice_session_itr *itr,
@@ -4807,8 +4800,6 @@ int voc_end_voice_call(uint32_t session_id)
 		voice_destroy_mvm_cvs_session(v);
 
 		v->voc_state = VOC_RELEASE;
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE
 	if (s2w_switch > 0) {
 		s2w_call_activity = false;
@@ -4819,7 +4810,6 @@ int voc_end_voice_call(uint32_t session_id)
 		dt2w_call_activity = false;
 	}
 #endif
->>>>>>> 02e048e... dt2w/s2w: implement call_activity
 	} else {
 		pr_err("%s: Error: End voice called in state %d\n",
 			__func__, v->voc_state);
@@ -5060,8 +5050,6 @@ int voc_start_voice_call(uint32_t session_id)
 		ret = -EINVAL;
 		goto fail;
 	}
-<<<<<<< HEAD
-=======
 #ifdef CONFIG_TOUCHSCREEN_SWEEP2WAKE
 	if (s2w_switch > 0) {
 		s2w_call_activity = true;
@@ -5072,7 +5060,6 @@ int voc_start_voice_call(uint32_t session_id)
 		dt2w_call_activity = true;
 	}
 #endif
->>>>>>> 02e048e... dt2w/s2w: implement call_activity
 fail:
 	mutex_unlock(&v->lock);
 	return ret;
