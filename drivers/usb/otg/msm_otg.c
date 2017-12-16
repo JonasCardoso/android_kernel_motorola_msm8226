@@ -55,7 +55,7 @@
 
 #ifdef CONFIG_FORCE_FAST_CHARGE
 #include <linux/fastchg.h>
-#define USB_FASTCHG_LOAD 2000 /* uA */
+#define USB_FASTCHG_LOAD 1200 /* uA */
 #endif
 
 #define MSM_USB_BASE	(motg->regs)
