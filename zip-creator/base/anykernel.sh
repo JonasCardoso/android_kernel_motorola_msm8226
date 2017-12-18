@@ -38,13 +38,6 @@ dump_boot;
 
 # begin ramdisk changes
 
-ui_print " ";
-ui_print "Removing Power Hal...";
-mount -o rw,remount -t auto /system;
-mv /system/lib/hw/power.msm8226.so /system/lib/hw/power.msm8226.bak;
-chmod -R 000 /system/lib/hw/power.msm8226.bak;
-mount -o ro,remount -t auto /system;
-
 ui_print " "; ui_print "Tweaking ramdisk...";
 
 replace_string init.qcom.rc "#start mpdecision" "start mpdecision" "#start mpdecision";
@@ -62,6 +55,12 @@ case "$cmdtmp" in
      *selinux=permissive*) ui_print "SElinux Its Already Permissive..."; ;;
      *) ui_print "Setting SElinux To Permissive..."; rm $cmdfile; echo "$cmdtmp androidboot.selinux=permissive" > $cmdfile;;
 esac;
+
+# add floppy script
+insert_line init.qcom.rc "init.floppy.rc" after "import init.target.rc" "import init.floppy.rc";
+
+# add support for spectrum
+insert_line init.rc "import /init.spectrum.rc" after "import /init.floppy.rc" "import /init.spectrum.rc";
 
 # end ramdisk changes
 
