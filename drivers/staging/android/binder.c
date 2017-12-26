@@ -1526,8 +1526,8 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 	if (failed_at)
 		off_end = failed_at;
 	else
-		off_end = (void *)offp + buffer->offsets_size;
-	for (; offp < off_end; offp++) {
+		off_end = (void *)off_start + buffer->offsets_size;
+	for (offp = off_start; offp < off_end; offp++) {
 		struct binder_object_header *hdr;
 		size_t object_size = binder_validate_object(buffer, *offp);
 
@@ -1583,7 +1583,6 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 			if (failed_at)
 				task_close_fd(proc, fp->fd);
 		} break;
-
 		case BINDER_TYPE_PTR:
 			/*
 			 * Nothing to do here, this will get cleaned up when the
@@ -1923,6 +1922,8 @@ static void binder_transaction(struct binder_proc *proc,
 	struct binder_transaction *in_reply_to = NULL;
 	struct binder_transaction_log_entry *e;
 	uint32_t return_error;
+	struct binder_buffer_object *last_fixup_obj = NULL;
+	binder_size_t last_fixup_min_off = 0;
 	struct binder_context *context = proc->context;
 
 	e = binder_transaction_log_add(&binder_transaction_log);
