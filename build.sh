@@ -110,6 +110,11 @@ then
 		rm -rf arch/${ARCH}/boot/dtb 
 	fi
 
+	if [ -f arch/${ARCH}/boot/dt.img ]
+	then
+		rm -rf arch/${ARCH}/boot/dt.img 
+	fi
+
 	NR_CPUS=$(($(grep -c ^processor /proc/cpuinfo) + 1))
 	echo "${bldblu}Building ${customkernel} with ${NR_CPUS} jobs at once${txtrst}"
 
@@ -121,9 +126,7 @@ then
 		make -j${NR_CPUS} CONFIG_NO_ERROR_ON_MISMATCH=y CONFIG_DEBUG_SECTION_MISMATCH=y
 	fi
 
-	#./dtbTool -s 2048 -o arch/arm64/boot/dt.img -p scripts/dtc/ arch/arm/boot/dts/qcom/
-	#cp arch/arm64/boot/dt.img arch/arm64/boot/dtb
-	#cp arch/arm64/boot/Image.gz arch/arm64/boot/zImage
+	#./dtbTool -s 2048 -o arch/arm/boot/dt.img -p scripts/dtc/ arch/arm/boot/dts/qcom/
 
 	END=$(date +"%s")
 	BUILDTIME=$((${END} - ${START}))
@@ -197,6 +200,7 @@ then
 
 		cp -r zip-creator/base/* ${zipdirout}/
 		cp arch/${ARCH}/boot/zImage-dtb ${zipdirout}/zImage
+		#cp arch/${ARCH}/boot/dt.img ${zipdirout}/dtb
 
 		echo "${customkernel}" >> ${zipdirout}/device.prop
 		echo "${name}" >> ${zipdirout}/device.prop
@@ -291,7 +295,7 @@ echo
 read -n 1 -p "${txtbld}Choice: ${txtrst}" -s x
 case ${x} in
 	1) echo "${x} - Cleaning Zips"; rm -rf zip-creator/*.zip; unset zippackagecheck;clear;;
-	2) echo "${x} - Cleaning Kernel"; make clean mrproper &> /dev/null;rm -rf arch/${ARCH}/boot/dtb ; rm -rf arch/${ARCH}/boot/Image.gz-dtb; rm -rf arch/${ARCH}/boot/zImage-dtb; rm -rf arch/${ARCH}/boot/zImage; rm -rf arch/${ARCH}/boot/dt.img; unset buildprocesscheck name variant defconfig BUILDTIME;clear;;
+	2) echo "${x} - Cleaning Kernel"; make clean mrproper &> /dev/null;rm -rf arch/${ARCH}/boot/dtb ; rm -rf arch/${ARCH}/boot/Image.gz-dtb; rm -rf arch/${ARCH}/boot/zImage-dtb; rm -rf arch/${ARCH}/boot/zImage; rm -rf arch/${ARCH}/boot/dt.img; rm -rf arch/${ARCH}/boot/dtb; unset buildprocesscheck name variant defconfig BUILDTIME;clear;;
 	3) maindevice;;
 	4) maintoolchain;;
 	5) buildprocess;;
