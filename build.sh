@@ -126,7 +126,7 @@ then
 		make -j${NR_CPUS} CONFIG_NO_ERROR_ON_MISMATCH=y CONFIG_DEBUG_SECTION_MISMATCH=y
 	fi
 
-	#./dtbTool -s 2048 -o arch/arm/boot/dt.img -p scripts/dtc/ arch/arm/boot/dts/qcom/
+	./dtbTool -s 2048 -o arch/arm/boot/dt.img -p scripts/dtc/ arch/arm/boot/
 
 	END=$(date +"%s")
 	BUILDTIME=$((${END} - ${START}))
@@ -200,7 +200,7 @@ then
 
 		cp -r zip-creator/base/* ${zipdirout}/
 		cp arch/${ARCH}/boot/zImage-dtb ${zipdirout}/zImage
-		#cp arch/${ARCH}/boot/dt.img ${zipdirout}/dtb
+		cp arch/${ARCH}/boot/dt.img ${zipdirout}/dtb
 
 		echo "${customkernel}" >> ${zipdirout}/device.prop
 		echo "${name}" >> ${zipdirout}/device.prop
