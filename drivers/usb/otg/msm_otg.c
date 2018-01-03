@@ -1430,7 +1430,7 @@ static int msm_otg_notify_power_supply(struct msm_otg *motg, unsigned mA)
 		/* Enable charging */
 		if (power_supply_set_online(psy, true))
 			goto psy_error;
-		if (power_supply_set_current_limit(psy, 1000*mA))
+		if (power_supply_set_current_limit(psy, 1200*mA))
 			goto psy_error;
 	} else if (motg->cur_power > 0 && (mA == 0 || mA == 2)) {
 		/* Disable charging */
@@ -1443,7 +1443,7 @@ static int msm_otg_notify_power_supply(struct msm_otg *motg, unsigned mA)
 		if (power_supply_set_online(psy, true))
 			goto psy_error;
 		/* Current has changed (100/2 --> 500) */
-		if (power_supply_set_current_limit(psy, 1000*mA))
+		if (power_supply_set_current_limit(psy, 1200*mA))
 			goto psy_error;
 	}
 
@@ -1502,7 +1502,6 @@ static void msm_otg_notify_charger(struct msm_otg *motg, unsigned mA)
 		pr_info("USB fast charging is OFF.\n");
 	}
 #endif
-	mA=1200;
 
 	dev_info(motg->phy.dev, "Avail curr from USB = %u\n", mA);
 
